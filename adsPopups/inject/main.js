@@ -1,5 +1,5 @@
 window.open=function(){
-  alert(2);
+  return;
 }
   
- 
+window.close();

@@ -58,7 +58,7 @@ function popups() {
       await chrome.scripting.registerContentScripts([
         {
           id: "main",
-          js: ["/data/inject/main.js"],
+          js: ["/inject/main.js"],
           world: "MAIN",
           matches: ["*://*/*"],
           allFrames: true,
