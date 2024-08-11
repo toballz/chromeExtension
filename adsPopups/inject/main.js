@@ -1,5 +1,5 @@
-window.open=function(){
+window.open = function () {
   return;
-}
-  
+};
+
 window.close();

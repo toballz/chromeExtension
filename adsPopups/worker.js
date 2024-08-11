@@ -53,19 +53,29 @@ function popups() {
   // Enable or disable the blocker
   const activate = async () => {
     try {
-      await chrome.scripting.unregisterContentScripts();
+      chrome.storage.sync.get("allowPopUps",   function (data) {
+        if (!data.allowPopUps) {
+          console.log( data.allowPopUps);
+          console.log("no popup");
+            chrome.scripting.unregisterContentScripts();
 
-      await chrome.scripting.registerContentScripts([
-        {
-          id: "main",
-          js: ["/inject/main.js"],
-          world: "MAIN",
-          matches: ["*://*/*"],
-          allFrames: true,
-          matchOriginAsFallback: true,
-          runAt: "document_start",
-        },
-      ]);
+            chrome.scripting.registerContentScripts([
+            {
+              id: "main",
+              js: ["/inject/main.js"],
+              world: "MAIN",
+              matches: ["*://*/*"],
+              allFrames: true,
+              matchOriginAsFallback: true,
+              runAt: "document_start",
+            },
+          ]);
+        }else{
+          console.log( data.allowPopUps);
+          console.log("allow popups");
+            chrome.scripting.unregisterContentScripts();
+        }
+      });
     } catch (e) {
       console.log("Blocker Registration Failed", e);
       await chrome.scripting.unregisterContentScripts();
@@ -75,8 +85,8 @@ function popups() {
   chrome.runtime.onStartup.addListener(activate);
   chrome.runtime.onInstalled.addListener(activate);
 
-  chrome.storage.onChanged.addListener((ps) => {
-    if (ps.enabled || ps["top-hosts"]) {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.allowPopUps) {
       activate();
     }
   });

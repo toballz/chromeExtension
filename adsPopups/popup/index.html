@@ -1,1 +1,40 @@
- 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkbox Table</title>
+    <style>
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      span {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body style="width: 200px;">
+    <main>
+      <ul>
+        <li>
+          <span>Allow all ads</span>
+          <div><input type="checkbox"/></div>
+        </li>
+        <li>
+          <span>Allow all popups</span>
+          <div><input type="checkbox" id="allowPopUpsss"/></div>
+        </li>
+      </ul>
+    </main>
+
+    <script src="index.js"> </script>
+  </body>
+</html>
