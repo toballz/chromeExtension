@@ -7,20 +7,33 @@ function getRandomInt(min, max) {
 function BlockUrls() {
   const domainVToBlock = async () => {
     //delete all
-    chrome.declarativeNetRequest.updateDynamicRules(
-      {
-        addRules: [],
-        removeRuleIds: [], // Remove previous rules with the same ID if necessary
-      },
-      () => {
-        console.log(`Blocked domain:  removed all`);
-      }
-    );
+    chrome.declarativeNetRequest.getDynamicRules((rules) => {
+      const ruleIds = rules.map((rule) => rule.id);
+
+      // Step 2: Remove all rules
+      chrome.declarativeNetRequest.updateDynamicRules(
+        {
+          removeRuleIds: ruleIds,
+        },
+        () => {
+          if (chrome.runtime.lastError) {
+            console.error(
+              `Failed to remove rules: ${chrome.runtime.lastError.message}`
+            );
+          } else {
+            console.log("Blocked domain: removed all rules");
+            if (typeof callback === "function") {
+              callback();
+            }
+          }
+        }
+      );
+    });
 
     let BlockRuleList = [];
     const domainToBlock = [
       "https://www.gorecenter.com/images/advertisement_fuckyea.jpg",
-      "*://*.displayvertising.com/*",
+      "*://*.displayvertising.com/*", 
     ];
 
     domainToBlock.forEach((url, index) => {
@@ -53,13 +66,13 @@ function popups() {
   // Enable or disable the blocker
   const activate = async () => {
     try {
-      chrome.storage.sync.get("allowPopUps",   function (data) {
+      chrome.storage.sync.get("allowPopUps", function (data) {
         if (!data.allowPopUps) {
-          console.log( data.allowPopUps);
+          console.log(data.allowPopUps);
           console.log("no popup");
-            chrome.scripting.unregisterContentScripts();
+          chrome.scripting.unregisterContentScripts();
 
-            chrome.scripting.registerContentScripts([
+          chrome.scripting.registerContentScripts([
             {
               id: "main",
               js: ["/inject/main.js"],
@@ -70,10 +83,10 @@ function popups() {
               runAt: "document_start",
             },
           ]);
-        }else{
-          console.log( data.allowPopUps);
+        } else {
+          console.log(data.allowPopUps);
           console.log("allow popups");
-            chrome.scripting.unregisterContentScripts();
+          chrome.scripting.unregisterContentScripts();
         }
       });
     } catch (e) {

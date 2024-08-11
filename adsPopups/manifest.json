@@ -1,8 +1,8 @@
 {
   "icons": {
-    "128": "/icons/i.jpeg",
-    "16": "/icons/i.jpeg",
-    "48": "/icons/i.jpeg"
+    "128": "/icons/e.png",
+    "16": "/icons/e.png",
+    "48": "/icons/e.png"
   },
   "action": {
     "default_popup": "/popup/index.html"

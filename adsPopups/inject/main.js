@@ -4,4 +4,4 @@ window.open = function() {
 
 
 
-//window.close();
+window.close();
