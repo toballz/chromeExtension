@@ -5,36 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkbox Table</title>
     <style>
-      ul {
+      .t-option {
         list-style: none;
         padding: 0;
       }
-      li {
+      .t-option > li {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px;
+        padding: 3px;
         border-bottom: 1px solid #ddd;
       }
-      span {
+      .t-option > li > span {
         flex: 1;
+      }
+      .t-option > li > div > [type="checkbox"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+      }
+      #blockurlss {
+        width: 200px;
+        padding: 13px;
       }
     </style>
   </head>
-  <body style="width: 200px;">
+  <body style="width: 300px;">
     <main>
-      <ul>
+      <ul class="t-option">
         <li>
           <span>Allow all ads</span>
-          <div><input type="checkbox"/></div>
+          <div><input type="checkbox" /></div>
         </li>
         <li>
           <span>Allow all popups</span>
-          <div><input type="checkbox" id="allowPopUpsss"/></div>
+          <div><input type="checkbox" id="allowPopUpsss" /></div>
+        </li>
+
+        <li></li>
+
+        <li>
+          <div>
+            <label for="blockurlss"
+              >Block Url preg|match *://*.example.com/*</label
+            >
+            <div>
+              <input type="text" id="blockurlss" />
+              <div><button>Block</button></div>
+            </div>
+          </div>
         </li>
       </ul>
     </main>
 
-    <script src="index.js"> </script>
+    <script src="index.js"></script>
   </body>
 </html>

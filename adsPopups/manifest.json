@@ -1,4 +1,9 @@
 {
+  "icons": {
+    "128": "/icons/i.jpeg",
+    "16": "/icons/i.jpeg",
+    "48": "/icons/i.jpeg"
+  },
   "action": {
     "default_popup": "/popup/index.html"
   },
@@ -6,7 +11,7 @@
     "service_worker": "worker.js"
   },
   "host_permissions": ["<all_urls>"],
- 
+
   "manifest_version": 3,
   "name": "ads url popup(!)",
   "permissions": [
@@ -17,5 +22,5 @@
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess"
   ],
-  "version": "0.8.4" 
+  "version": "0.8.4"
 }
