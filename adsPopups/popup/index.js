@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentTab = tabs[0];
         const uro = new URL(currentTab.url);
         const whatToAdd =
-          event.target.id == blockUrisID
+          event.target.id == blockDomainsID
             ? `*://*.${uro.hostname}/*`
             : currentTab.url;
 

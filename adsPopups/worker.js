@@ -30,8 +30,7 @@ function BlockUrls() {
     chrome.storage.sync.get(s_blockedUris, function (data) {
       let BlockRuleList = [];
 
-      data[s_blockedUris].forEach((url, index) => {
-        console.log(url);
+      data[s_blockedUris].forEach((url, index) => { 
         BlockRuleList.push({
           id: getRandomInt(2, 100 + index),
           priority: 1,
@@ -56,6 +55,11 @@ function BlockUrls() {
   };
   chrome.runtime.onStartup.addListener(domainVToBlock);
   chrome.runtime.onInstalled.addListener(domainVToBlock);
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes[s_blockedUris]) {
+      domainVToBlock();
+    }
+  });
 }
 
 function popups() {
