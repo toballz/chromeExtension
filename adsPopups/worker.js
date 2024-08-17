@@ -1,56 +1,45 @@
-self.importScripts('def.js');
+self.importScripts("def.js");
 
 /* global config, URLPattern */
 function BlockUrls() {
   const domainVToBlock = async () => {
-    //delete all
-    chrome.declarativeNetRequest.getDynamicRules((rules) => {
-      const ruleIds = rules.map((rule) => rule.id);
-
-      // Step 2: Remove all rules
-      chrome.declarativeNetRequest.updateDynamicRules(
-        {
-          removeRuleIds: ruleIds,
-        },
-        () => {
-          if (chrome.runtime.lastError) {
-            console.error(
-              `Failed to remove rules: ${chrome.runtime.lastError.message}`
-            );
-          } else {
-            //console.log("Blocked domain: removed all rules");
-            if (typeof callback === "function") {
-              callback();
-            }
-          }
-        }
-      );
-    });
-
     chrome.storage.sync.get(s_blockedUris, function (data) {
       let BlockRuleList = [];
 
-      data[s_blockedUris].forEach((url, index) => { 
+      console.log(data[s_blockedUris]);
+      
+      data[s_blockedUris].forEach((url, index) => {
         BlockRuleList.push({
-          id: getRandomInt(2, 100 + index),
+          id: 2 + index,
           priority: 1,
           action: { type: "block" },
           condition: {
             urlFilter: url,
-            resourceTypes: ["main_frame", "sub_frame", "image"],
+            resourceTypes: [
+              "main_frame",
+              "sub_frame",
+              "image",
+              "script",
+              "xmlhttprequest",
+            ],
           },
         });
       });
 
-      chrome.declarativeNetRequest.updateDynamicRules(
-        {
-          addRules: BlockRuleList,
-          removeRuleIds: [1], // Remove previous rules with the same ID if necessary
-        },
-        () => {
-          //console.log(`Blocked domain: ${BlockRuleList}`);
-        }
-      );
+      //delete all
+      chrome.declarativeNetRequest.getDynamicRules((rules) => {
+        const ruleIdsToRemove = rules.map((rule) => rule.id);
+
+        chrome.declarativeNetRequest.updateDynamicRules(
+          {
+            removeRuleIds: ruleIdsToRemove,
+            addRules: BlockRuleList,
+          },
+          () => {
+            //console.log(`Blocked domain: ${BlockRuleList}`);
+          }
+        );
+      });
     });
   };
   chrome.runtime.onStartup.addListener(domainVToBlock);
@@ -67,7 +56,7 @@ function popups() {
   const activate = async () => {
     try {
       chrome.storage.sync.get(s_allowPopUps, function (data) {
-        if (!data[s_allowPopUps]) { 
+        if (!data[s_allowPopUps]) {
           chrome.scripting.unregisterContentScripts();
 
           chrome.scripting.registerContentScripts([

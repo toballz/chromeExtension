@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const uro = new URL(currentTab.url);
         const whatToAdd =
           event.target.id == blockDomainsID
-            ? `*://*.${uro.hostname}/*`
+            ? `*://${uro.hostname}/*`
             : currentTab.url;
 
         if (!dlockUriList.includes(whatToAdd)) {

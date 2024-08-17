@@ -10,12 +10,11 @@ window._ = function () {
 //************ */
 //************* */
 // Override the default document.write behavior
-document.write = function () {
-  console.log("Blocked document.write call");
+document.write = function () { 
   return null;
 };
 document._ = function () {
-  console.log("Blocked document.write call");
+  //console.log("Blocked document.write call");
   return null;
 };
 
@@ -25,9 +24,7 @@ document._ = function () {
 //************* */
 //listen for new iframe created
 function handleIframeCreation(node) {
-  if (node.tagName === "IFRAME") {
-    // Block or modify iframe behavior here
-    console.log("Blocked an iframe creation:", node);
+  if (node.tagName === "IFRAME") { 
     return null;
   }
 }
