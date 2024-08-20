@@ -13,7 +13,7 @@ function onDocumentLoad() {
             return null;
           };
         } catch (e) {
-          console.error("Error accessing iframe content:", e);
+          console.log("Error accessing iframe content:", e);
         }
       };
       return null;

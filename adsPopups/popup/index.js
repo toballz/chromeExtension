@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!dlockUriList.includes(whatToAdd)) {
           dlockUriList.push(whatToAdd);
         }
+        console.log(dlockUriList);
 
         chrome.storage.sync.set({
           blockedUris: dlockUriList,
