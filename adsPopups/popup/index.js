@@ -36,6 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!dlockUriList.includes(whatToAdd)) {
           dlockUriList.push(whatToAdd);
+          if(event.target.id == ID_blockDomains){
+            //and subdomains
+            dlockUriList.push(`*://*.${uro.hostname}/*`);
+          }
         }
 
         await chrome.storage.sync.set({
