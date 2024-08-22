@@ -23,7 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.sync.get(s_blockedUris, function (data) {
       var dlockUriList = data[s_blockedUris] || [];
 
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, async function (
+        tabs
+      ) {
         // Get the active tab
         const currentTab = tabs[0];
         const uro = new URL(currentTab.url);
@@ -36,11 +38,13 @@ document.addEventListener("DOMContentLoaded", function () {
           dlockUriList.push(whatToAdd);
         }
 
-        chrome.storage.sync.set({
+        await chrome.storage.sync.set({
           blockedUris: dlockUriList,
         });
 
-        location.reload();
+        setTimeout(function () {
+          chrome.tabs.reload(currentTab.id);
+        }, 1000);
       });
     });
   }
