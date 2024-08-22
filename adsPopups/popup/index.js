@@ -1,6 +1,3 @@
- 
-
-
 document.addEventListener("DOMContentLoaded", function () {
   // Set the checkbox state based on the stored value
   chrome.storage.sync.get(s_allowPopUps, function (data) {
@@ -38,13 +35,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!dlockUriList.includes(whatToAdd)) {
           dlockUriList.push(whatToAdd);
         }
-        console.log(dlockUriList);
 
         chrome.storage.sync.set({
           blockedUris: dlockUriList,
         });
 
-        console.log(dlockUriList);
+        location.reload();
       });
     });
   }

@@ -1,0 +1,19 @@
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+.editurls-table {
+  width: 90%;
+  margin: auto;
+  padding: 2px;
+}
+.editurls-table button {
+  width: 100%; cursor:pointer
+}
+td.url-cell {
+  width: 100%;
+  max-width: 80%;
+  white-space: normal;
+  word-wrap: break-word;
+}
