@@ -3,6 +3,45 @@
 :before {
   box-sizing: border-box;
 }
+
+
+
+
+/*
+index 
+*/
+
+.t-option {
+  list-style: none;
+  padding: 0;
+}
+.t-option > li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px;
+  border-bottom: 1px solid #ddd;
+}
+.t-option > li > span {
+  flex: 1;
+} 
+  .t-option > li > div > [type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+#blockurlss {
+  width: 200px;
+  padding: 13px;
+}
+#BTN_editblockedsdomain{width:50%;margin:auto;display: block;}
+#b-uri,#b-domain{padding: 12px;cursor: pointer;}
+
+
+
+/*
+edits 
+*/
 .editurls-table {
   width: 90%;
   margin: auto;

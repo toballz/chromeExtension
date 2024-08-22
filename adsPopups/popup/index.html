@@ -5,33 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkbox Table</title>
     <script src="../def.js"></script>
-    <style>
-      .t-option {
-        list-style: none;
-        padding: 0;
-      }
-      .t-option > li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 3px;
-        border-bottom: 1px solid #ddd;
-      }
-      .t-option > li > span {
-        flex: 1;
-      }
-      .t-option > li > div > [type="checkbox"] {
-        cursor: pointer;
-        width: 16px;
-        height: 16px;
-      }
-      #blockurlss {
-        width: 200px;
-        padding: 13px;
-      }
-
-      #b-uri,#b-domain{padding: 12px;cursor: pointer;}
-    </style>
+    <link rel="stylesheet" href="./css.css" />
   </head>
   <body style="width: 300px;">
     <main>
@@ -47,9 +21,18 @@
 
         <li></li>
         <li>
-          <div style="display: flex;justify-content: space-between;width:100%;;">
-            <button id="b-domain" >Block this domain</button>
-            <button id="b-uri" >Block this page</button>
+          <div style="width:100%;">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+              "
+            >
+              <button id="b-domain">Block this domain</button>
+              <button id="b-uri">Block this page</button>
+            </div>
+            <button id="BTN_editblockedsdomain">Edit Blocked Domains</button>
           </div>
         </li>
         <li></li>

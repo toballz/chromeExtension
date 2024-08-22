@@ -51,4 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById(ID_blockUris).onclick = blockURIDOMAINclick;
   document.getElementById(ID_blockDomains).onclick = blockURIDOMAINclick;
+  document.getElementById(ID_BTN_editblockedsdomain).onclick = function(){
+    chrome.tabs.create({ url: chrome.runtime.getURL("/popup/edits.html") });
+  };
 });
