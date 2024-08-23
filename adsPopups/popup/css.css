@@ -36,8 +36,11 @@ index
 }
 #BTN_editblockedsdomain{width:50%;margin:auto;display: block;}
 #b-uri,#b-domain{padding: 12px;cursor: pointer;}
-
-
+.vvwe{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;}
+.af22  button{border:0;margin:5px;padding: 12px 7px;}
 
 /*
 edits 
