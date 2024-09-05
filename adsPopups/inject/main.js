@@ -3,6 +3,10 @@ function stopTR() {
   return null;
 }
 let aggressive = 3;
+
+
+
+
 const blocker = {};
 blocker.frame = target => {
   const {src, tagName} = target;
@@ -122,7 +126,15 @@ blocker.install = (w = window) => {
       if (name && typeof name === 'string' && frames[name]) {
         return Reflect.apply(target, self, args);
       }
- 
+      
+
+      //
+      //simulate
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      return iframe.contentWindow;
+
       return false;//Reflect.apply(target, self, args);
     }
   });
