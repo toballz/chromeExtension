@@ -1,7 +1,9 @@
+const ID_editblockedsdomain = 'editblockedsdomain';
+
 document.addEventListener("DOMContentLoaded", function () {
   function blockURIDOMAINclick(event) {
-    chrome.storage.sync.get(s_blockedUris, function (data) {
-      var dlockUriList = data[s_blockedUris] || [];
+    chrome.storage.sync.get('blockedUris', function (data) {
+      var dlockUriList = data['blockedUris'] || [];
 
       dlockUriList.forEach((url) => {
         const row = document.createElement("tr");

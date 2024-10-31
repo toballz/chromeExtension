@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkbox Table</title>
-    <script src="../def.js"></script>
-    <link rel="stylesheet" href="./css.css" />
-  </head>
-  <body style="width: 300px;">
-    <main>
-      <ul class="t-option">
-        <li>
-          <span>Allow all ads</span>
-          <div><input type="checkbox" /></div>
-        </li>
-        <li>
-          <span>Allow all popups</span>
-          <div><input type="checkbox" id="allowPopUpsss" /></div>
-        </li>
 
-        <li></li>
-        <li class="af22">
-          <div style="width: 100%;">
-            <div class="vvwe">
-              <button id="b-domain">Block this domain</button>
-              <button id="b-uri">Block this page</button>
-            </div>
-            <button id="BTN_editblockedsdomain">Edit Blocked Domains</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkbox Table</title>
+  <script src="../def.js"></script>
+  <link rel="stylesheet" href="./css.css" />
+</head>
+
+<body style="width: 300px;">
+  <main>
+    <ul class="t-option">
+      <li>
+        <span>Allow all ads</span>
+        <div><input type="checkbox" /></div>
+      </li>
+      <li>
+        <span>Block all PopUps</span>
+        <div><input type="checkbox" id="BlockAllPopUpss" /></div>
+      </li>
+
+      <li></li>
+      <li class="af22">
+        <div style="width: 100%;">
+          <div style="display:flex;justify-content:space-between;">
+            <span>Enable your block list</span>
+            <div><input type="checkbox" id="enableYourBlocklist" /></div>
           </div>
-        </li>
-        <li></li> 
-      </ul>
-    </main>
+          <div class="vvwe">
+            <button id="b-domain">Block this domain</button>
+            <button id="b-uri">Block this page</button>
+          </div>
+          <button id="BTN_editblockedsdomain">Edit Blocked Domains</button>
+        </div>
+      </li>
+      <li></li>
+    </ul>
+  </main>
 
-    <script src="index.js"></script>
-  </body>
+  <script src="index.js"></script>
+</body>
+
 </html>
