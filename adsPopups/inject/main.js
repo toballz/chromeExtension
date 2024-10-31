@@ -1,162 +1,156 @@
 function stopTR() {
-  //console.log("Blocked action");
-  return null;
+  return null; // Placeholder function to block actions
 }
-let aggressive = 3;
+
+let aggressive = 3; // Aggression level for blocking
 
 const blocker = {};
+
+// Block iframes and frames based on source
 blocker.frame = (target) => {
   const { src, tagName } = target;
   if (src && (tagName === "IFRAME" || tagName === "FRAME")) {
     const s = src.toLowerCase();
     if (s.startsWith("javascript:") || s.startsWith("data:")) {
       try {
-        blocker.install(target.contentWindow);
-      } catch (e) {}
+        const contentWindow = target.contentWindow;
+        if (contentWindow) {
+          blocker.install(contentWindow);
+        }
+      } catch (e) {
+        console.warn("Error installing blocker on frame:", e);
+      }
     }
   }
 };
+
+// Handle click events
 blocker.onclick = (e) => {
   const a = e.target.closest("[target]") || e.target.closest("a");
-
-  // If this is not a form or anchor element, ignore the click
   if (a) {
-    blocker.onclick.pointer.call(a, e); // Using call to pass the context
-    return true;
-  } else {
-    return false;
+    // Block methods #1, #2, #3, #4, #5
+    if (a.target === "_blank" || a.closest("base")?.target === "_blank") {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      return false; // Block the event
+    }
   }
+  return true; // Allow non-anchor clicks
 };
-blocker.onclick.pointer = MouseEvent.prototype.preventDefault;
+
+// Prevent default actions
+ 
+// Main installation function
 blocker.install = (w = window) => {
   const d = w.document;
 
-  /* overwrites */
+  // Overwrite default behavior for anchor and form elements
   const { HTMLAnchorElement, HTMLFormElement } = w;
   HTMLAnchorElement.prototype.click = stopTR;
   HTMLAnchorElement.prototype.dispatchEvent = stopTR;
   HTMLFormElement.prototype.submit = stopTR;
   HTMLFormElement.prototype.dispatchEvent = stopTR;
 
-  /* iframe mess */
+  // Aggressive blocking for iframes and frames
   if (aggressive > 1) {
     const { HTMLIFrameElement, HTMLFrameElement } = w;
 
-    const wf = Object.getOwnPropertyDescriptor(
-      HTMLFrameElement.prototype,
-      "contentWindow"
-    );
-    Object.defineProperty(HTMLFrameElement.prototype, "contentWindow", {
-      configurable: true,
-      enumerable: true,
-      get: function () {
-        const w = wf.get.call(this);
-        try {
-          blocker.install(w);
-        } catch (e) {}
-        return w;
-      },
-    });
-    const wif = Object.getOwnPropertyDescriptor(
-      HTMLIFrameElement.prototype,
-      "contentWindow"
-    );
-    Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
-      configurable: true,
-      enumerable: true,
-      get: function () {
-        const w = wif.get.call(this);
-        try {
-          blocker.install(w);
-        } catch (e) {}
-        return w;
-      },
-    });
-    const cf = Object.getOwnPropertyDescriptor(
-      HTMLFrameElement.prototype,
-      "contentDocument"
-    );
-    Object.defineProperty(HTMLFrameElement.prototype, "contentDocument", {
-      configurable: true,
-      enumerable: true,
-      get: function () {
-        const d = cf.get.call(this);
-        try {
-          blocker.install(d.defaultView);
-        } catch (e) {}
-        return d;
-      },
-    });
-    const cif = Object.getOwnPropertyDescriptor(
-      HTMLIFrameElement.prototype,
-      "contentDocument"
-    );
-    Object.defineProperty(HTMLIFrameElement.prototype, "contentDocument", {
-      configurable: true,
-      enumerable: true,
-      get: function () {
-        const d = cif.get.call(this);
-        try {
-          blocker.install(d.defaultView);
-        } catch (e) {}
-        return d;
-      },
-    });
+    const overrideContentWindow = (element) => {
+      const originalDescriptor = Object.getOwnPropertyDescriptor(element.prototype, "contentWindow");
+      Object.defineProperty(element.prototype, "contentWindow", {
+        configurable: true,
+        enumerable: true,
+        get: function () {
+          const w = originalDescriptor.get.call(this);
+          if (w) {
+            try {
+              blocker.install(w);
+            } catch (e) {
+              console.warn("Error installing blocker on content window:", e);
+            }
+          }
+          return w;
+        },
+      });
+    };
+
+    overrideContentWindow(HTMLFrameElement);
+    overrideContentWindow(HTMLIFrameElement);
+
+    const overrideContentDocument = (element) => {
+      const originalDescriptor = Object.getOwnPropertyDescriptor(element.prototype, "contentDocument");
+      Object.defineProperty(element.prototype, "contentDocument", {
+        configurable: true,
+        enumerable: true,
+        get: function () {
+          const d = originalDescriptor.get.call(this);
+          if (d && d.defaultView) {
+            try {
+              blocker.install(d.defaultView);
+            } catch (e) {
+              console.warn("Error installing blocker on content document:", e);
+            }
+          }
+          return d;
+        },
+      });
+    };
+
+    overrideContentDocument(HTMLFrameElement);
+    overrideContentDocument(HTMLIFrameElement);
   }
 
-  /* iframe creation with innerHTML */
+  // Monitor DOM changes for iframe creation
   if (aggressive > 2) {
-    new MutationObserver((ms) => {
-      for (const m of ms) {
-        for (const e of m.addedNodes) {
-          blocker.frame(e);
-          if (e.childElementCount) {
-            [...e.querySelectorAll("iframe")].forEach(blocker.frame);
+    new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          blocker.frame(node);
+          if (node.childElementCount) {
+            [...node.querySelectorAll("iframe")].forEach(blocker.frame);
           }
         }
       }
     }).observe(d, { childList: true, subtree: true });
   }
 
-  /* click */
-  d.addEventListener("click", blocker.onclick, true); // with capture;
+  // Capture click events
+  d.addEventListener("click", blocker.onclick, true);
 
-  /* window.open */
+  // Override window.open
   w.open = new Proxy(w.open, {
     apply(target, self, args) {
-      // do not block if window is opened inside a frame
       const name = args[1];
       if (name && typeof name === "string" && frames[name]) {
-        return Reflect.apply(target, self, args);
+        return Reflect.apply(target, self, args); // Allow if opened in a frame
       }
 
-      //
-      //simulate
       const iframe = document.createElement("iframe");
       iframe.style.display = "none";
       document.body.appendChild(iframe);
-      return iframe.contentWindow;
-
-      return false; //Reflect.apply(target, self, args);
+      return iframe.contentWindow; // Return the iframe's contentWindow
     },
   });
 
-  /* DOM replacement (document.open removes all the DOM listeners) */
+  // Monitor document.write
   let dHTML = d.documentElement;
   d.write = new Proxy(d.write, {
     apply(target, self, args) {
-      const r = Reflect.apply(target, self, args);
+      const result = Reflect.apply(target, self, args);
       if (dHTML !== self.documentElement) {
         dHTML = self.documentElement;
         self.addEventListener("click", blocker.onclick, true);
       }
-      return r;
+      return result;
     },
   });
 };
+
+// Remove event listeners and cleanup
 blocker.remove = (w = window, d = document) => {
   d.removeEventListener("click", blocker.onclick);
 };
 
-// always install since we do not know the enabling status right now
+// Always install since we do not know the enabling status right now
 blocker.install();

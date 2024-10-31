@@ -1,11 +1,16 @@
-const ID_editblockedsdomain = 'editblockedsdomain';
+const ID_EDIT_BLOCKED_DOMAINS = 'editblockedsdomain';
 
 document.addEventListener("DOMContentLoaded", function () {
-  function blockURIDOMAINclick(event) {
-    chrome.storage.sync.get('blockedUris', function (data) {
-      var dlockUriList = data['blockedUris'] || [];
+  const blockURIDOMAINclick = async () => {
+    try {
+      const { blockedUris = [] } = await chrome.storage.sync.get('blockedUris');
 
-      dlockUriList.forEach((url) => {
+      // Clear existing rows before repopulating
+      const tableBody = document.getElementById(ID_EDIT_BLOCKED_DOMAINS);
+      tableBody.innerHTML = ''; // Clear existing rows
+
+      // Populate the table with blocked URIs
+      blockedUris.forEach((url) => {
         const row = document.createElement("tr");
 
         const cellUrl = document.createElement("td");
@@ -16,20 +21,24 @@ document.addEventListener("DOMContentLoaded", function () {
         const cellBtn = document.createElement("td");
         const button = document.createElement("button");
         button.textContent = "Delete";
-        button.onclick = () => {
-          dlockUriList = dlockUriList.filter((urlr) => urlr !== url);
+        
+        button.onclick = async () => {
+          const updatedList = blockedUris.filter((blockedUrl) => blockedUrl !== url);
+          await chrome.storage.sync.set({ blockedUris: updatedList });
 
-          chrome.storage.sync.set({
-            blockedUris: dlockUriList,
-          });
-          location.reload();
+          // Re-render the table after deletion
+          blockURIDOMAINclick();
         };
+
         cellBtn.appendChild(button);
         row.appendChild(cellBtn);
 
-        document.getElementById(ID_editblockedsdomain).appendChild(row);
+        tableBody.appendChild(row);
       });
-    });
-  }
+    } catch (error) {
+      console.warn("Failed to load blocked URIs:", error);
+    }
+  };
+
   blockURIDOMAINclick();
 });

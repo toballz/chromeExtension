@@ -1,121 +1,62 @@
-const ID_BlockAllPopUpss = "BlockAllPopUpss",
-  ID_blockUris = "b-uri",
-  ID_blockDomains = "b-domain",
-  ID_BTN_editblockedsdomain = "BTN_editblockedsdomain",
-  ID_enableYourBlocklist = "enableYourBlocklist";
+const ID_BLOCK_ALL_POPUPS = "BlockAllPopUpss",
+      ID_BLOCK_URIS = "b-uri",
+      ID_BLOCK_DOMAINS = "b-domain",
+      ID_BTN_EDIT_BLOCKED_DOMAINS = "BTN_editblockedsdomain",
+      ID_ENABLE_YOUR_BLOCKLIST = "enableYourBlocklist";
 
+document.addEventListener("DOMContentLoaded", async function () {
+  // Get current active tab
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  const currentTab = tabs[0];
+  const currentUrl = new URL(currentTab.url);
 
+  // Initialize popup settings
+  const initPopupSettings = async () => {
+    const { s_blockAllPopUps = true } = await chrome.storage.sync.get('s_blockAllPopUps');
+    document.getElementById(ID_BLOCK_ALL_POPUPS).checked = s_blockAllPopUps;
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById(ID_BLOCK_ALL_POPUPS).addEventListener("change", function () {
+      chrome.storage.sync.set({ s_blockAllPopUps: this.checked });
+      setTimeout(() => chrome.tabs.reload(currentTab.id), 100);    });
+  };
 
-  //get current tab
-  chrome.tabs.query({ active: true, currentWindow: true }, async function (
-    tabs
-  ) {
+  // Initialize block list settings
+  const initBlockListSettings = async () => {
+    const { s_bool_blockurl = true } = await chrome.storage.sync.get('s_bool_blockurl');
+    document.getElementById(ID_ENABLE_YOUR_BLOCKLIST).checked = s_bool_blockurl;
 
-    // Get the active tab
-    const currentTab = tabs[0];
-    const uro = new URL(currentTab.url);
+    document.getElementById(ID_ENABLE_YOUR_BLOCKLIST).addEventListener("change", function () {
+      chrome.storage.sync.set({ s_bool_blockurl: this.checked });
+      setTimeout(() => chrome.tabs.reload(currentTab.id), 100);    });
+  };
 
-    //##################################################################################
-    //*************
-    //popups 
+  // Add URI or domain to block list
+  const blockURIDOMAINclick = async (event) => {
+    const { blockedUris = [] } = await chrome.storage.sync.get('blockedUris');
+    
+    const whatToAdd = event.target.id === ID_BLOCK_DOMAINS
+      ? `*://${currentUrl.hostname}/*`
+      : currentTab.url;
 
-    // Set the checkbox state based on load
-    chrome.storage.sync.get('s_blockAllPopUps', function (store) {
-      const ab = store['s_blockAllPopUps'] || true;
-      document.getElementById(ID_BlockAllPopUpss).checked = ab
-        ;
-      chrome.storage.sync.set({ 's_blockAllPopUps': ab });
-    });
-
-    // Listen for changes to the checkbox and store the new value 
-    document
-      .getElementById(ID_BlockAllPopUpss)
-      .addEventListener("change", function () {
-        //update to storage
-        chrome.storage.sync.set({ 's_blockAllPopUps': this.checked });
-        //reload
-        setTimeout(function () {
-          chrome.tabs.reload(currentTab.id);
-        }, 100);
-      });
-    //#################################################################################
-    //********
-    //your block list 
-    // Set the checkbox state based on load
-    chrome.storage.sync.get('s_bool_blockurl', function (data) {
-      const aa = data['s_bool_blockurl'] || true;
-      document.getElementById(ID_enableYourBlocklist).checked =
-        aa;
-      chrome.storage.sync.set({ 's_bool_blockurl': aa });
-
-
-    });
-
-    // Listen for changes to the checkbox and store the new value
-    // popups
-    document
-      .getElementById(ID_enableYourBlocklist)
-      .addEventListener("change", function () {
-        //update to storage
-        chrome.storage.sync.set({ 's_bool_blockurl': this.checked });
-        //reload
-        setTimeout(function () {
-          chrome.tabs.reload(currentTab.id);
-        }, 100);
-      });
-    //#################################################################################
-
-
-
-
-
-
-    //*************
-    //ads
-    //
-    //
-    //
-
-    function blockURIDOMAINclick(event) {
-      chrome.storage.sync.get('blockedUris', async function (data) {
-        var dlockUriList = data['blockedUris'] || [];
-
-        const whatToAdd =
-          event.target.id == ID_blockDomains
-            ? `*://${uro.hostname}/*`
-            : currentTab.url;
-
-
-        if (!dlockUriList.includes(whatToAdd)) {
-          dlockUriList.push(whatToAdd);
-          if (event.target.id == ID_blockDomains) {
-            //and subdomains
-            dlockUriList.push(`*://*.${uro.hostname}/*`);
-          }
-        }
-
-        await chrome.storage.sync.set({
-          blockedUris: dlockUriList,
-        });
-
-        setTimeout(function () {
-          chrome.tabs.reload(currentTab.id);
-        }, 1000);
-      });
+    if (!blockedUris.includes(whatToAdd)) {
+      blockedUris.push(whatToAdd);
+      if (event.target.id === ID_BLOCK_DOMAINS) {
+        // Add subdomain block rule
+        blockedUris.push(`*://*.${currentUrl.hostname}/*`);
+      }
+      await chrome.storage.sync.set({ blockedUris });
+      setTimeout(() => chrome.tabs.reload(currentTab.id), 100);
     }
+  };
 
-    document.getElementById(ID_blockUris).onclick = blockURIDOMAINclick;
-    document.getElementById(ID_blockDomains).onclick = blockURIDOMAINclick;
-    document.getElementById(ID_BTN_editblockedsdomain).onclick = function () {
-      chrome.tabs.create({ url: chrome.runtime.getURL("/popup/edits.html") });
-    };
-
+  // Event listeners
+  document.getElementById(ID_BLOCK_URIS).addEventListener("click", blockURIDOMAINclick);
+  document.getElementById(ID_BLOCK_DOMAINS).addEventListener("click", blockURIDOMAINclick);
+  document.getElementById(ID_BTN_EDIT_BLOCKED_DOMAINS).addEventListener("click", () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL("/popup/edits.html") });
   });
 
-
-
-
-
+  // Initialize settings
+  await initPopupSettings();
+  await initBlockListSettings();
 });
