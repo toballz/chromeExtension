@@ -22,10 +22,8 @@
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess"
   ],
-  "version": "0.8.4",
+  "version": "0.9.1" 
 
 
-  "key": "AIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFmSjU432CjKYI/w7UA8f6O2Z5TKhwccXRJd0EnDRwoGgi0wJqYkA++jqIMXHQMvqoZ1RC60H1woIYA8VY8O8Z3rIW5zmtE03YRVTI2VQYGDz1rK26ZKkS6Kg5u3eyre+bA7KWbesOWXDrZQ8NcczSgXtZJm8Oyj6vb95F4QaXwIDAQAB",
-
-  "update_url": "https://clients2.google.com/service/update2/crx"
-}
+ 
+ }

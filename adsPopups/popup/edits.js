@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Clear existing rows before repopulating
       const tableBody = document.getElementById(ID_EDIT_BLOCKED_DOMAINS);
-      tableBody.innerHTML = ''; // Clear existing rows
+      //tableBody.innerHTML = ''; // Clear existing rows
 
       // Populate the table with blocked URIs
       blockedUris.forEach((url) => {
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
           await chrome.storage.sync.set({ blockedUris: updatedList });
 
           // Re-render the table after deletion
-          blockURIDOMAINclick();
+          location.reload();
         };
 
         cellBtn.appendChild(button);
